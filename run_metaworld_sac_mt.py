@@ -366,7 +366,7 @@ if __name__ == '__main__':
     
     logger.info(vars(args))
 
-    out = run_experiment(args, save_dir, seed=args.seed)
+    out = run_experiment(args, save_dir, seed=args.seed[0])
     
     for key, value in out.items():
         if key == "all_metaworld":

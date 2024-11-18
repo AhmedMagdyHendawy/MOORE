@@ -33,7 +33,7 @@ conda activate moore_metaworld
 
 git clone https://github.com/Farama-Foundation/Metaworld.git
 
-cd metaworld
+cd Metaworld
 
 git checkout a98086a
 
