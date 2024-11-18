@@ -1,2 +1,4 @@
 from .core import Core
-__all__ = ['Core']
+from .vec_core import VecCore
+
+__all__ = ['Core','VecCore']

@@ -14,21 +14,42 @@ Multi-Task Reinforcement Learning (MTRL) tackles the long-standing problem of en
 
 ## Installation
 
-You need to clone this repos and setup the conda environment as follows:
+You need to clone this repos and setup the conda environment for each benchmark separately.
+
+### MiniGrid [1]
 
 ```shell
-conda env create -f environment.yml
+conda env create -f moore_minigrid.yml
+```
+
+### Metaworld [2]
+
+```shell
+conda env create -f moore_metaworld.yml
+```
+In addition, you need to clone the metaworld repository, and install from source a specific commit as follows:
+```shell
+conda activate moore_metaworld
+
+git clone https://github.com/Farama-Foundation/Metaworld.git
+
+cd metaworld
+
+git checkout a98086a
+
+pip install -e .
 ```
 
 ---
 
 ## Experiments
 
+### MiniGrid [1]
 This version of the codebase allows the reproducibity of the **main** (Fig. 2 in the paper) and **transfer** (Fig. 3 in the paper) results on **MiniGrid** [1].
 
 In `run/minigrid`, we have three different folders corresponding to three different learning settings: `single_task`, `multi_task`, and `transfer`. 
 
-### Single-Task
+#### Single-Task
 Here is an example on how to run the `single_task` experiment:
 
 ```shell
@@ -50,7 +71,7 @@ You need to replace `[ENV_NAME]` with one of the environment names listed below:
 
 By default, we use `wandb` to log the results of the experiments. In general, for any `bash` script, you need to replace `[WANDB_ENTITY]` with your wandb entity. Otherwise, you can comment the `wandb` activation: `# --wandb --wandb_entity [WANDB_ENTITY]`.
 
-### Multi-Task
+#### Multi-Task
 Here is an example on how to run our MOORE algorithm experiment : 
 
 ```shell
@@ -65,7 +86,7 @@ For `[ENV_NAME]`, we replace it with one of the following multi-task settings: `
 
 **NOTE**: for `MTPPO` baseline, there is no `[N_EXPERTS]` argument to be passed to the corresponding scripts.
 
-### Transfer
+#### Transfer
 Here is an example on how to run our Transfer-MOORE algorithm experiment : 
 
 ```shell
@@ -89,6 +110,26 @@ sh run_minigrid_ppo_tl_moore_multihead.sh TL3_5 2 logs/minigrid/MT/MT3/ppo_mt_mo
 **NOTE**: for `*_noinit.sh` experiments, no `[LOAD_DIR]` is needed.
 
 ---
+### Metaworld [2]
+This version of the codebase also allows the reproducibity of the MT10 and MT50 results of MOORE and the MOE baseline on Metaworld [2].
+
+In `run/metaworld`, we have 4 run files for the 4 mentioned experiments.
+
+For example, here is how to run MOORE on MT10:
+```shell
+conda activate moore_metaworld
+
+cd run/metaworld
+
+sh run_metaworld_mt10_mhsac_mt_moore.sh [N_EXPERTS] [SEED]
+```
+You can replace ```[N_EXPERTS]``` with 4, in case of MT10 to match the setting in the main paper. For MT50, we use 6 experts.
+
+For ```[SEED]```, you change it according to the seed index. In the main paper, we run 10 seeds for each experiment. You need to run this run file 10 times with incremental seed index, on different GPUs for faster training.
+
+As mentioned before, we use wandb to log the results of the experiments. In general, for any bash script, you need to replace [WANDB_ENTITY] with your wandb entity. Otherwise, you can comment the wandb activation: # --wandb --wandb_entity [WANDB_ENTITY].
+
+---
 
 ## Citation
 
@@ -106,7 +147,10 @@ sh run_minigrid_ppo_tl_moore_multihead.sh TL3_5 2 logs/minigrid/MT/MT3/ppo_mt_mo
 ## Reference
 [1] Chevalier-Boisvert, Maxime, et al. "Minigrid & miniworld: Modular & customizable reinforcement learning environments for goal-oriented tasks." Advances in Neural Information Processing Systems 36 (2024).
 
+[2] Yu, Tianhe, et al. "Meta-world: A benchmark and evaluation for multi-task and meta reinforcement learning." Conference on robot learning. PMLR, 2020.
+
 ---
 
 ## TODO
-- [ ] MetaWorld setting
+- [x] MiniGrid setting
+- [x] MetaWorld setting

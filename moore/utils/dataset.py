@@ -31,7 +31,7 @@ def get_stats(dataset, gamma, gamma_eval, dataset_info = None):
 
     return min_J, max_J, mean_J, mean_discounted_J, success_rate
 
-def parse_dataset(dataset, features=None, n_contexts = 1):
+def parse_dataset(dataset, features=None, n_contexts = 0):
     """
     Split the dataset in its different components and return them.
 

@@ -9,13 +9,31 @@ def argparser():
      arg_mdp.add_argument("--horizon", type=int)
      arg_mdp.add_argument("--gamma", type=float, default=0.98)
      arg_mdp.add_argument("--gamma_eval", type=float, default=1.)
+     arg_mdp.add_argument("--normalize_reward", action='store_true')
+     # metaworld env
+     arg_mdp.add_argument("--exp_type", type = str)#
+     arg_mdp.add_argument("--sample_task_per_episode", action='store_true')
 
+     arg_mem = parser.add_argument_group('Replay Memory')
+     arg_mem.add_argument("--initial_replay_size", type=int, default=10000,
+                          help='Initial size of the replay memory.')
+     arg_mem.add_argument("--max_replay_size", type=int, default=1e6,
+                          help='Max size of the replay memory.')
+     arg_mem.add_argument("--warmup_transitions", type=int, default=5000,
+                          help='number of samples to accumulate in the replay memory to start the policy fitting')
+     arg_mem.add_argument("--tau", type=float, default=0.005,
+                          help='value of coefficient for soft updates;')
+     
      arg_alg = parser.add_argument_group('Algorithm')
+     arg_alg.add_argument("--activation", choices=['ReLU', 'Sigmoid', 'Tanh', 'Linear'], default='ReLU')
+     arg_alg.add_argument("--n_head_features", type=int, nargs='+', default=[])
      arg_alg.add_argument("--train_frequency", type=int, default=1)
      arg_alg.add_argument("--batch_size", type=int, default=128,
                           help='Batch size for each fit of the network.')
      arg_alg.add_argument("--n_epochs", type=int, default=200,
                           help='Number of epochs.')
+     arg_alg.add_argument("--start_epoch", type=int, default=0,
+                          help='Start epoch.')
      arg_alg.add_argument("--n_steps", type=int,
                           help='Number of learning steps per epoch.')
      arg_alg.add_argument("--n_episodes", type=int,
@@ -34,16 +52,25 @@ def argparser():
                             help='Use dropout in the network')#
      
      arg_alg.add_argument("--actor_network", type=str, default="ActorNetwork")
+     arg_alg.add_argument("--actor_mu_network", type=str, default="ActorNetwork")
+     arg_alg.add_argument("--actor_sigma_network", type=str, default="ActorNetwork")
      arg_alg.add_argument("--actor_n_features", type=int, nargs='+', default=[])
+     arg_alg.add_argument("--actor_mu_n_features", type=int, nargs='+', default=[])
+     arg_alg.add_argument("--actor_sigma_n_features", type=int, nargs='+', default=[])
      arg_alg.add_argument("--critic_network", type=str, default="CriticNetwork")
      arg_alg.add_argument("--critic_n_features", type=int, nargs='+', default=[])
      arg_alg.add_argument("--lr_actor", type=float, default=3e-4)
      arg_alg.add_argument("--lr_critic", type=float, default=3e-4)
-
+     arg_alg.add_argument("--lr_alpha", type=float, default=2e-6)
+     arg_alg.add_argument("--target_entropy", type=float)
+     arg_alg.add_argument("--log_std_min", type=int, default=-20)
+     arg_alg.add_argument("--log_std_max", type=int, default=2)
+     arg_alg.add_argument("--shared_mu_sigma", action="store_true")
 
      arg_me = parser.add_argument_group('MixtureExperts')
      arg_me.add_argument("--orthogonal", action="store_true")
      arg_me.add_argument("--n_experts", type=int, default=4)
+     arg_me.add_argument("--agg_activation", type=str, nargs='+', default=['ReLU', 'ReLU'])
 
      arg_utils = parser.add_argument_group('Utils')
      arg_utils.add_argument('--use_cuda', action='store_true',
